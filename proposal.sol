@@ -90,13 +90,30 @@ contract ProposalContract {
         //     return false;
         // }
 
-
-        // Different logic to calculate the state
-        uint256 total_votes = proposal.approve + proposal.reject + proposal.pass;
-        uint256 requireApproval = (total_votes / 2) + 1;
+        uint256 total_vote = proposal.approve + proposal.reject + proposal.pass;
+        uint256 requireApproval = (total_vote / 2) + 1;
 
         return proposal.approve >= requireApproval; 
+    }
 
+    function terminateProposal() external onlyOwner active {
+        proposal_history[counter].is_active = false;
+    }
 
+    function isVoted(address _address) public view returns (bool) {
+        for (uint i = 0; i < voted_addresses.length; i++) {
+            if (voted_addresses[i] == _address) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getCurrentProposal() external view returns(Proposal memory) {
+        return proposal_history[counter];
+    }
+
+    function getProposal(uint256 number) external view returns(Proposal memory) {
+        return proposal_history[number];
     }
 }
